@@ -7,8 +7,8 @@
 #include <string.h>
 
 // a little description:
-//this code is a hash table.
-//it stores the books, its authors
+//this code uses a hash table.
+//it stores the books and its authors
 //it is good to use when you want to keep track of all the books you ever read
 
 
@@ -49,7 +49,7 @@ int main()
     //do as a greeting
     printf("Store the books in a hash table!\n");
 
-    //intro function->control->hash->add(->check)->loop
+    //intro function call
     intro();
 
     //bye
@@ -60,14 +60,15 @@ int main()
 //control
 int control (char *newName, char *newAuthor)
 {
-    int index = hash(newName);
-    addToTable(newName, newAuthor, index);
-    int continueJ = loop();
-    if (continueJ == 0)
+    
+    int index = hash(newName); //gets an index for the bucket in a hash table
+    addToTable(newName, newAuthor, index); //adds the book and its author to the hash table
+    int continueJ = loop(); //checks whether the user wants to continue entering new books
+    if (continueJ == 0) 
     {
         freeMemory();
         return 0;
-    }
+    } //if user said no, then this if statement frees the memory and returns to main function
     return 0;
 }
 
@@ -76,9 +77,11 @@ int freeMemory()
 {
     for (int i = 0; i < 26; i++)
     {
+        //if the bucket at that particular index is not NULL then do teh following
         if(table[i] != NULL)
         {
             node *freeH = table[i];
+            //the while loop that frees all the nodes in the hash table at the particular index
             while(freeH != NULL)
             {
                 node *temp = freeH->next;
@@ -87,13 +90,14 @@ int freeMemory()
                 free(freeH);
                 freeH = temp;
             }
+            //free the bucket itself
             table[i] = NULL;
         }
     }
     return 0;
 }
 
-//loop
+//loop function loops so that user can keep entering new books
 int loop()
 {
     char *yesString = "Yes";
@@ -124,7 +128,7 @@ int loop()
     return 0;
 }
 
-//intro fucntion
+//intro fucntion asks to eneter the book name and author and then calls control function
 int intro()
 {
     //intro
@@ -187,7 +191,7 @@ int addToTable(char *newName, char *newAuthor, int index)
     strcpy(newBook->book, newName);
     strcpy(newBook->author, newAuthor);
 
-    //if there is noting starting at that letter in teh table yet.
+    //if there is nothing starting at that letter in the table yet.
     if(table[index] == NULL)
     {
         table[index] = newBook;
@@ -197,7 +201,6 @@ int addToTable(char *newName, char *newAuthor, int index)
     }
     else
     {
-        //first check
         newBook->next = table[index];
         table[index] = newBook;
         printf("Added!\n");
@@ -205,7 +208,7 @@ int addToTable(char *newName, char *newAuthor, int index)
     }
 }
 
-//check function
+//check function checks whether the book is already in the hash table
 bool check(char *newName, char *newAuthor, int index)
 {
     if(table[index] == NULL)
@@ -239,6 +242,7 @@ bool check(char *newName, char *newAuthor, int index)
 //it is a very simple hash fucntion!
 int hash(char *book)
 {
+    //if books name is not composed from letters
     if (!isalpha(book[0]))
     {
         return 0;
